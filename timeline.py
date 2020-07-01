@@ -4,20 +4,22 @@
 # Objective     :
 # Created by    :
 # Created on    : 06/29/2020
-# Last modified : 07/01/2020 11:21
+# Last modified : 07/01/2020 13:37
 # Description   :
 #   V1.0 create timeline from xls
 # ************************************************************#
 
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
 import matplotlib.dates as mdates
 from datetime import datetime
-#import seaborn as sns
+# import seaborn as sns
+
+import sys
 
 
-def timeline(xlsfile, output="timeline.png", title="timeline", date_interval=10, figsize=(8.8, 5)):
+def timeline(xlsfile, output = "timeline.png", title = "timeline", date_interval = 10, figsize = (8.8, 5)):
     alldata = pd.read_excel(xlsfile, header = None, skiprows = 1, dtype = object)
     names = alldata[0]
     dates = alldata[2]
@@ -25,7 +27,7 @@ def timeline(xlsfile, output="timeline.png", title="timeline", date_interval=10,
     # Matplotlib fix chinese-font and '-' error
     plt.rcParams['font.sans-serif'] = ['SimHei']
     plt.rcParams['axes.unicode_minus'] = False
-    #sns.set(font = 'SimHei')
+    # sns.set(font = 'SimHei')
     ## Seaborn chinese-font
 
     # Convert date strings (e.g. 2014-10-18) to datetime
@@ -36,7 +38,7 @@ def timeline(xlsfile, output="timeline.png", title="timeline", date_interval=10,
                      int(np.ceil(len(dates) / 6)))[:len(dates)]
 
     # Create figure and plot a stem plot with the date
-    fig, ax = plt.subplots(figsize =figsize)
+    fig, ax = plt.subplots(figsize = figsize)
     ax.set(title = title)
 
     markerline, stemline, baseline = ax.stem(dates, levels,
@@ -58,7 +60,7 @@ def timeline(xlsfile, output="timeline.png", title="timeline", date_interval=10,
     ax.get_xaxis().set_major_locator(mdates.MonthLocator(interval = 1))
     ax.get_xaxis().set_major_formatter(mdates.DateFormatter("%b %Y"))
     plt.setp(ax.get_xticklabels(), rotation = 30, ha = "right")
-    ax.get_xaxis().set_minor_locator(mdates.DayLocator(interval=date_interval))
+    ax.get_xaxis().set_minor_locator(mdates.DayLocator(interval = date_interval))
     ax.get_xaxis().set_minor_formatter(mdates.DateFormatter("%d"))
 
     # remove y axis and spines
@@ -73,4 +75,7 @@ def timeline(xlsfile, output="timeline.png", title="timeline", date_interval=10,
 
 
 if __name__ == "__main__":
-    timeline("timeline-demo.xlsx")
+    try:
+        timeline(sys.argv[0], sys.argv[1])
+    except:
+        timeline("timeline-demo.xlsx")
